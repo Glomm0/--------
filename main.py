@@ -1,6 +1,6 @@
-
+import generator
 def checking(index,var_vector):
-    temp=[0 for i in range(max(index.keys()))] #значения каждого дизьюнкта по умолчанию !!!!Надо добавить изменение по кол-ву переменных
+    temp=[0 for i in range(max(index.keys()))] #значения каждого дизьюнкта по умолчанию 
     for i,znach in enumerate(var_vector):
         for j in index[i+1]:
             if j>0:
@@ -13,7 +13,9 @@ def checking(index,var_vector):
 
 
 index={}#хранит информацию о том, в каких скобках есть та или иная переменная
-example="(x1|-x2|x3),(-x1|-x2|x4),(x5|-x4|x3),(-x1|-x2|-x3),(-x1|-x2|-x5)" #Функция для проверки
+NUMBER_OF_VARIABLES=5
+example=generator.generateKNF(NUMBER_OF_VARIABLES) #Функция для проверки
+print(example)
 temp_data=example.split(',')
 for i,skobka in enumerate(temp_data):
     skobka=skobka[1:-1:]
@@ -24,6 +26,6 @@ for i,skobka in enumerate(temp_data):
         else:
             index[znach].append(-1*i if num[0]=='-' else i)
 #Тупой перебор       
-for i in range(pow(2,5)):
+for i in range(pow(2,NUMBER_OF_VARIABLES)):
     print("{:0>5}".format(bin(i)[2:]))#Подумать над работой с бинарными данными
     print (checking(index,"{:0>5}".format(bin(i)[2:])))
