@@ -3,7 +3,31 @@ import random
 con = "|"
 start = "("
 end = ")"
+##############
+def checking(index,var_vector,number_of_desuncts):
+    temp=[0 for i in range(number_of_desuncts)] #значения каждого дизьюнкта по умолчанию 
+    for i,znach in enumerate(var_vector):
+        for j in index[(i+1)]:
+            if j>0:
+                temp[j]+=int(znach)
+            else:
+                temp[j]+=int(znach)^1
+    ans=list(map(lambda x:1 if x>0 else 0,temp))
+    return ans.count(1)
 
+def setIndex(func):
+    index={}
+    temp_data=func.split(',')
+    for i,skobka in enumerate(temp_data):
+        skobka=skobka[1:-1:]
+        for num in skobka.split("|"):
+            znach=int(num[num.index('x')+1:])
+            if(znach not in index.keys()):
+                index[znach]=[-1*i if num[0]=='-' else i]
+            else:
+                index[znach].append(-1*i if num[0]=='-' else i)
+    return index
+########## Функции из main
 
 def getSign():
     return random.randint(0, 1)
@@ -244,8 +268,53 @@ def generateKNF(n):
 
     #     func += start + pos[0] + "|" + pos[1] + "|" + pos[2] + end + ","
     # return func[:-1:]
-    
 
-f = "(x1|x8|-x5),(x2|x9|x4),(x3|x7|-x9),(x4|-x3|-x5),(x5|-x1|x9),(x6|x3|x4),(x7|x2|-x4),(x8|x7|-x2),(x9|-x5|x8),(x10|x5|x7)"
-addCon("(x1|x8|-x5),(x2|x9|x4),(x3|x7|-x9),(x4|-x3|-x5),(x5|-x1|x9),(x6|x3|x4),(x7|x2|-x4),(x8|x7|-x2),(x9|-x5|x8),(x10|x5|x7)", 10)
-# generateKNF(5)
+#Будем юзать ее чтобы генерировать уже функцию для работы   
+global_rate=[] 
+def generateRandomKNF(NUMBER_OF_VARIABLES):
+    example=generateKNF(NUMBER_OF_VARIABLES) #Функция для проверки
+
+    index = setIndex(example)
+
+    #Тупой перебор       
+    # with open("output.txt","w") as fle:
+    #     fle.write("")
+
+
+    # for i,znach in enumerate(("{:0>" + f"{10}" + "}").format(bin(1)[2:])):
+    #     print(index[i+1])
+
+    #цикл, который достраивает формулу, добавляя скобки, пока она разрешима
+    #Делаем неразрешимую функцию (Для проверки работы алгоритма)
+    counter=0
+    for k in range(NUMBER_OF_VARIABLES):
+        counter+=1
+        count = []
+        rate = []
+
+        n = len(example.split(","))
+        index = setIndex(example)#хранит информацию о том, в каких скобках есть та или иная переменная
+        
+        for i in range(pow(2, NUMBER_OF_VARIABLES)):
+            # print("{:0>10}".format(bin(i)[2:]))#Подумать над работой с бинарными данными
+            # print (("{:0>" + f"{NUMBER_OF_VARIABLES}" + "}").format(bin(i)[2:]))
+            count.append(checking(index, ("{:0>" + f"{NUMBER_OF_VARIABLES}" + "}").format(bin(i)[2:]),n))#
+            # print(("{:0>" + f"{n}" + "}"))
+            # with open("output.txt","a") as fle:
+            #     fle.write(str(checking(index,"{:0>10}".format(bin(i)[2:])))+"\n")
+        for c in count:
+            if c == n:
+                rate.append(1)
+                
+            else:
+                rate.append(0)
+                
+        if rate.count(1) > 0 and k !=NUMBER_OF_VARIABLES-1:
+            example = addCon(example, NUMBER_OF_VARIABLES)
+        else:
+            break
+
+
+    print("true desuncts: ",max(count) ," number of operations to find function:",counter )
+    print("Percent of true answers: ", rate.count(1) / len(rate))
+    return(example)
