@@ -287,7 +287,7 @@ def generateRandomKNF(NUMBER_OF_VARIABLES):
     #цикл, который достраивает формулу, добавляя скобки, пока она разрешима
     #Делаем неразрешимую функцию (Для проверки работы алгоритма)
     counter=0
-    for k in range(NUMBER_OF_VARIABLES):
+    for k in range(NUMBER_OF_VARIABLES//4):
         counter+=1
         count = []
         rate = []
@@ -309,7 +309,8 @@ def generateRandomKNF(NUMBER_OF_VARIABLES):
             else:
                 rate.append(0)
                 
-        if rate.count(1) > 0 and k !=NUMBER_OF_VARIABLES-1:
+        if rate.count(1) > 0 and k !=NUMBER_OF_VARIABLES//4-1:
+        
             example = addCon(example, NUMBER_OF_VARIABLES)
         else:
             break
@@ -318,3 +319,81 @@ def generateRandomKNF(NUMBER_OF_VARIABLES):
     print("true desuncts: ",max(count) ," number of operations to find function:",counter )
     print("Percent of true answers: ", rate.count(1) / len(rate))
     return(example)
+
+def generate_full_ranodm_KNF(NUMBER_OF_VARIABLES):
+    example=generateKNF(NUMBER_OF_VARIABLES) #Функция для проверки
+
+    index = setIndex(example)
+
+    #Тупой перебор       
+    # with open("output.txt","w") as fle:
+    #     fle.write("")
+
+
+    # for i,znach in enumerate(("{:0>" + f"{10}" + "}").format(bin(1)[2:])):
+    #     print(index[i+1])
+
+    #цикл, который достраивает формулу, добавляя скобки, пока она разрешима
+    #Делаем неразрешимую функцию (Для проверки работы алгоритма)
+    counter=0
+    for k in range(NUMBER_OF_VARIABLES//4):
+        counter+=1
+        count = []
+        rate = []
+
+        n = len(example.split(","))
+        index = setIndex(example)#хранит информацию о том, в каких скобках есть та или иная переменная
+        
+        for i in range(pow(2, NUMBER_OF_VARIABLES)):
+            # print("{:0>10}".format(bin(i)[2:]))#Подумать над работой с бинарными данными
+            # print (("{:0>" + f"{NUMBER_OF_VARIABLES}" + "}").format(bin(i)[2:]))
+            count.append(checking(index, ("{:0>" + f"{NUMBER_OF_VARIABLES}" + "}").format(bin(i)[2:]),n))#
+            # print(("{:0>" + f"{n}" + "}"))
+            # with open("output.txt","a") as fle:
+            #     fle.write(str(checking(index,"{:0>10}".format(bin(i)[2:])))+"\n")
+        for c in count:
+            if c == n:
+                rate.append(1)
+                
+            else:
+                rate.append(0)
+                
+        if k !=NUMBER_OF_VARIABLES//4-1:
+            example = addCon(example, NUMBER_OF_VARIABLES)
+        
+
+    print("true desuncts: ",max(count) ," number of operations to find function:",counter )
+    print("Percent of true answers: ", rate.count(1) / len(rate))
+    return(example,max(count))
+def generate_without_checking(NUMBER_OF_VARIABLES):
+    example=generateKNF(NUMBER_OF_VARIABLES) #Функция для проверки
+
+    index = setIndex(example)
+
+    #Тупой перебор       
+    # with open("output.txt","w") as fle:
+    #     fle.write("")
+
+
+    # for i,znach in enumerate(("{:0>" + f"{10}" + "}").format(bin(1)[2:])):
+    #     print(index[i+1])
+
+    #цикл, который достраивает формулу, добавляя скобки, пока она разрешима
+    #Делаем неразрешимую функцию (Для проверки работы алгоритма)
+    counter=0
+    for k in range(random.randint(NUMBER_OF_VARIABLES//4,NUMBER_OF_VARIABLES//3)):
+        counter+=1
+        
+        if k !=NUMBER_OF_VARIABLES//4-1:
+            example = addCon(example, NUMBER_OF_VARIABLES)
+        
+
+    # print(" number of operations to find function:",counter )
+    
+    return(example)
+def generate_into_file():
+    with open("examples.txt",'w') as file:
+        #Write number of variable to generate_without_checking_function
+        file.write(generate_without_checking(50)+",\n")
+        file.write(generate_without_checking(100)+",\n")
+        file.write(generate_without_checking(200))
