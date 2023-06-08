@@ -45,8 +45,8 @@ class Particle:
             
         self.position=temp
     def change_speed(self):
-        r1=random.randint(0,1)
-        r2=random.randint(0,1)
+        r1=random.random()
+        r2=random.random()
         
         self.speed=self.add_vectors(self.add_vectors(self.mult_number_by_vector(self.a1*r1,self.sub_vectors(self.best_position,self.position)),
                                                     self.mult_number_by_vector(self.a2*r2,self.sub_vectors(self.best_swarm_position,self.position))),

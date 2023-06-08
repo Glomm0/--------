@@ -66,11 +66,12 @@ def run():
                     print(checking(index,Particle.best_swarm_position,n))
                     print("Total desuncts: ",n)
                     return 0
+            results.append([o,checking(index,i.position,n)])
         for i in particles:
             i.change_speed()
             # i.change_speed_binary()
-        results.append([o,checking(index,Particle.best_swarm_position,n)])
-    print(checking(index,Particle.best_swarm_position,n))
+        # results.append([o,checking(index,Particle.best_swarm_position,n)])
+    print("Maximum found true desuncts:",checking(index,Particle.best_swarm_position,n))
     print("Total desuncts: ",n)
     
     Particle.best_swarm_position=[]
@@ -79,36 +80,48 @@ def run():
 
 
 
+try:
+    if True:
+        with open("examples.txt","r") as file:
+            iters=[500] #number of iterations may be a list if several iteration numbers are necessary
+            data=file.read().split(",\n")
 
-if __name__=="__main__":
-    with open("examples.txt","r") as file:
-        iters=[500] #number of iterations may be a list if several iteration numbers are necessary
-        data=file.read().split(",\n")
+            #Parameters
+            Particle.a1=1.7  #Particle best position
+            Particle.a2=1.55  #Swarm best position
+            Particle.w=1.8 #Inertia
 
-        #Parameters
-        Particle.a1=1.8  #Particle best position
-        Particle.a2=1.6  #Swarm best position
-        Particle.w=0.8   #Inertia
-        for j in iters:
-            for i,ex in enumerate(data):
-               
-                results=[]
-                NUMBER_OF_VARIABLES=max(setIndex(ex).keys())
-                NUMBER_OF_ITERATIONS=j
-                run()
-                x=[i[0] for i in results]
-                y=[i[1]/len(ex.split(',')) for i in results]
-                plt.subplot((len(data))*100+1*10+i+1)
-                plt.title("number of all desuncts:"+str(len(ex.split(','))))
-                plt.ylabel("MAXIMUM True")
-                plt.xlabel("NUMBER OF ITERATIONS")
-                plt.grid(True)
-                plt.axis([0,len(x),0,1])
-                plt.plot(x,y)
+            #Reading parameters from file
+            with open ("parameters.txt") as params:
+                param_data=params.read().split("\n")
+                Particle.a1=float(param_data[0][3:]) #Particle best position
+                Particle.a2=float(param_data[1][3:])  #Swarm best position
+                Particle.w=float(param_data[2][2:])
+            for j in iters:
+                for i,ex in enumerate(data):
                 
-                    # print(results)
-        matplotlib.pyplot.subplots_adjust( hspace=0.8)
-        plt.show()
-        
+                    results=[]
+                    NUMBER_OF_VARIABLES=max(setIndex(ex).keys())
+                    NUMBER_OF_ITERATIONS=j
+                    run()
+                    x=[i[0] for i in results]
+                    y=[i[1] for i in results]
+                    plt.subplot((len(data))*100+1*10+i+1)
+                    plt.title("number of all desuncts:"+str(len(ex.split(','))))
+                    plt.ylabel("MAXIMUM True")
+                    s=[1 for i in x]
+                    plt.xlabel("NUMBER OF ITERATIONS")
+                    plt.grid(True)
+                    # plt.axis([0,len(x),0,1])
+                    
+                    plt.scatter(x,y,sizes=s)
+                    
+                        # print(results)
+            matplotlib.pyplot.subplots_adjust( hspace=0.8)
+            plt.show()
+    input("Press any button to exit:")
+except Exception as e:
+    print(e)
+    input()
             
             

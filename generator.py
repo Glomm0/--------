@@ -394,6 +394,8 @@ def generate_without_checking(NUMBER_OF_VARIABLES):
 def generate_into_file():
     with open("examples.txt",'w') as file:
         #Write number of variable to generate_without_checking_function
-        file.write(generate_without_checking(50)+",\n")
-        file.write(generate_without_checking(100)+",\n")
-        file.write(generate_without_checking(200))
+        # file.write(generate_without_checking(300)+",\n")
+        # file.write(generate_without_checking(400)+",\n")
+        file.write(generateKNF(500)+",\n")
+        file.write(generate_without_checking(400))
+# generate_into_file()
