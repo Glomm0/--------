@@ -66,11 +66,11 @@ def run():
                     print(checking(index,Particle.best_swarm_position,n))
                     print("Total desuncts: ",n)
                     return 0
-            results.append([o,checking(index,i.position,n)])
+            # results.append([o,checking(index,i.position,n)])
         for i in particles:
             i.change_speed()
             # i.change_speed_binary()
-        # results.append([o,checking(index,Particle.best_swarm_position,n)])
+        results.append([o,checking(index,Particle.best_swarm_position,n)])
     print("Maximum found true desuncts:",checking(index,Particle.best_swarm_position,n))
     print("Total desuncts: ",n)
     
@@ -114,11 +114,11 @@ def run2():
                     print(checking(index,Particle.best_swarm_position,n))
                     print("Total desuncts: ",n)
                     return 0
-            results.append([o,checking(index,i.position,n)])
+            # results.append([o,checking(index,i.position,n)])
         for i in particles:
             # i.change_speed()
             i.change_speed_binary()
-        # results.append([o,checking(index,Particle.best_swarm_position,n)])
+        results.append([o,checking(index,Particle.best_swarm_position,n)])
     print("Maximum found true desuncts:",checking(index,Particle.best_swarm_position,n))
     print("Total desuncts: ",n)
     
@@ -126,58 +126,66 @@ def run2():
 
 
 
+def program():
+    global Program_results,ex,NUMBER_OF_VARIABLES,NUMBER_OF_ITERATIONS,results
+    try:
+        if True:
+            with open("examples.txt","r") as file:
+                iters=500 #number of iterations may be a list if several iteration numbers are necessary
+                ex=file.read()
 
-try:
-    if True:
-        with open("examples.txt","r") as file:
-            iters=[500] #number of iterations may be a list if several iteration numbers are necessary
-            data=file.read().split(",\n")
+                #Parameters
+                Particle.a1=1.7  #Particle best position
+                Particle.a2=1.55  #Swarm best position
+                Particle.w=1.8 #Inertia
 
-            #Parameters
-            Particle.a1=1.7  #Particle best position
-            Particle.a2=1.55  #Swarm best position
-            Particle.w=1.8 #Inertia
+                #Reading parameters from file
+                with open ("parameters.txt") as params:
+                    param_data=params.read().split("\n")
+                    Particle.a1=float(param_data[0][3:]) #Particle best position
+                    Particle.a2=float(param_data[1][3:])  #Swarm best position
+                    Particle.w=float(param_data[2][2:])
+                print("Parameters are:")
+                print("a1=",Particle.a1)
+                print("a2=",Particle.a2)
+                print("w=",Particle.w)
+                mode=input("Choose mode to run (1-probability, 2-binary)")
 
-            #Reading parameters from file
-            with open ("parameters.txt") as params:
-                param_data=params.read().split("\n")
-                Particle.a1=float(param_data[0][3:]) #Particle best position
-                Particle.a2=float(param_data[1][3:])  #Swarm best position
-                Particle.w=float(param_data[2][2:])
-            print("Parameters are:")
-            print("a1=",Particle.a1)
-            print("a2=",Particle.a2)
-            print("w=",Particle.w)
-            mode=input("Choose mode to run (1-probability, 2-binary)")
-
-            for j in iters:
-                for i,ex in enumerate(data):
                 
-                    results=[]
-                    NUMBER_OF_VARIABLES=max(setIndex(ex).keys())
-                    NUMBER_OF_ITERATIONS=j
-                    if mode=='1':
-                        run()
-                    else:
-                        run2()
-                    x=[i[0] for i in results]
-                    y=[i[1] for i in results]
-                    plt.subplot((len(data))*100+1*10+i+1)
+                
+                    
+                results=[]
+                NUMBER_OF_VARIABLES=max(setIndex(ex).keys())
+                NUMBER_OF_ITERATIONS=iters
+                if mode=='1':
+                    run()
+                else:
+                    run2()
+                Program_results.append(results)
+                for num,res in enumerate(Program_results):
+                    x=[i[0] for i in res]
+                    y=[i[1] for i in res]
+                    
                     plt.title("number of all desuncts:"+str(len(ex.split(','))))
                     plt.ylabel("MAXIMUM True")
                     s=[1 for i in x]
                     plt.xlabel("NUMBER OF ITERATIONS")
                     plt.grid(True)
-                    # plt.axis([0,len(x),0,1])
-                    
-                    plt.scatter(x,y,sizes=s)
-                    
-                        # print(results)
-            matplotlib.pyplot.subplots_adjust( hspace=0.8)
-            plt.show()
-    input("Press any button to exit:")
-except Exception as e:
-    print(e)
-    input()
-            
-            
+                            # plt.axis([0,len(x),0,1])
+                    word="(Prob)" if mode=='1' else "(Bin)"
+                    plt.plot(x,y,label=str(num)+" запуск")
+                        
+                            # print(results)
+                matplotlib.pyplot.subplots_adjust( hspace=0.8)
+                leg = plt.legend(loc='lower center')
+                plt.show()
+        a=input("You can change parameters and type \"1\" to compare new results to previous:")
+        if a=='1':
+            program()
+        else:
+            return 1
+    except Exception as e:
+        print(e)
+        input()
+Program_results=[]
+program()

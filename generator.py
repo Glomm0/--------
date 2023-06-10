@@ -399,10 +399,10 @@ def generate_into_file():
         file.write(generateKNF(500)+",\n")
         file.write(generate_without_checking(400))
 # generate_into_file()
-N_V=int(input("How many variables to generate:"))
-mode=input("Choose mode (1-all true, 2-full random)")
-if mode=='1':
-    print(generateKNF(N_V))
-else:
-    print(generate_without_checking(N_V))
-input("Press any button to exit")
+# N_V=int(input("How many variables to generate:"))
+# mode=input("Choose mode (1-all true, 2-full random)")
+# if mode=='1':
+#     print(generateKNF(N_V))
+# else:
+#     print(generate_without_checking(N_V))
+# input("Press any button to exit")
